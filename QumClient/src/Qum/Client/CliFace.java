@@ -37,10 +37,15 @@ public class CliFace {
 
     public JFrame frmQumChat;
 
-    public static File fb;
+    private static File fb;
     
+    public static File getFb() {
+        return fb;
+    }
+
     private JTextField textEnter;
-    public static JTextArea textArea;
+    
+    private JTextArea textArea;
 
     static Date date = new Date();
 
@@ -56,7 +61,7 @@ public class CliFace {
 	initialize();
     }
 
-    public static CliFace initCliFace() {
+    public static CliFace getInstance() {
 	if (face == null) {
 	    EventQueue.invokeLater(new Runnable() {
 		public void run() {
@@ -117,6 +122,7 @@ public class CliFace {
 	// win_HEIGHT = Integer.parseInt(sett.getProperty("высота окна"));
 	// if (MyNick.isEmpty())
 	// greetingQuest();
+	
 	textArea = new JTextArea();
 	textArea.setBorder(new LineBorder(new Color(0, 0, 0)));
 	textArea.setFocusable(false);
@@ -150,7 +156,7 @@ public class CliFace {
 		    text = textEnter.getText();
 		}
 
-		if (!SocketMaster.sendMess(new Mess(SocketMaster.dateFormat
+		if (!SocketMaster.getInstance().sendMess(new Mess(SocketMaster.dateFormat
 			.format(date) + " " + MyNick, text))) {
 		    System.out.println("CliFace : Err in Text Action");
 		    textArea.append(("SYS : Нету связи с сервером.")
@@ -240,11 +246,12 @@ public class CliFace {
 		int result = MisterCho.showOpenDialog(null);
 		if (result == JFileChooser.APPROVE_OPTION) {
 		    String name = MisterCho.getSelectedFile().getPath();
-		    File fb = new File(name);
-		    SocketMaster.sendMess(new Mess(JOptionPane
+		     fb = new File(name);
+		    SocketMaster.getInstance().sendMess(new Mess(JOptionPane
 			    .showInputDialog("Кому ?"), fb.getName(), fb
-			    .length(), SocketMaster.Sock.getInetAddress()
+			    .length(), SocketMaster.getInstance().getMainChatSocket().getInetAddress()
 			    .getHostAddress(), SocketMaster.FILE_REQUEST));
+		    FileTransporter.setFileSize(fb.length());
 		}
 	    }
 	});
@@ -253,7 +260,7 @@ public class CliFace {
 		    // закрытию окна
 		    public void windowClosing(WindowEvent event) {
 
-			SocketMaster.sendMess(new Mess(" ", "",
+			SocketMaster.getInstance().sendMess(new Mess(" ", "",
 				SocketMaster.LOGOUT));
 
 			// sett.put("WIDTH", "" + frame.getWidth());
@@ -271,6 +278,9 @@ public class CliFace {
 	frmQumChat.setSize(528, 320);
     }
 
+    public void showText(String text){
+	textArea.append(text);
+    }
 //    public static void greetingQuest() {  Уже не используется
 //	System.out.println("frame : Gree in");
 //	if (MyNick == null) {

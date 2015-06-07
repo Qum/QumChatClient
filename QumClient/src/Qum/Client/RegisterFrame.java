@@ -84,19 +84,24 @@ public class RegisterFrame {
 			    .setText("<html><i>Ёто запрещенный ник!!</i></html>");
 		} else {
 
-		    if (SocketMaster.Sock == null) {
-			if (SocketMaster.initSocket()) {
-			    new Thread(new SocketMaster(), "SocketMaster")
-				    .start();
-			    SocketMaster.sendMess(new Mess(
+		    if (SocketMaster.getMainChatSocket() == null) {
+			if (SocketMaster.initMainSocket()) {
+			    SocketMaster.getInstance().sendMess(new Mess(
 				    loginField.getText(), passField.getText(),
 				    emailField.getText(),
 				    SocketMaster.REGISTER_REQUEST));
+			    System.out.println("REG_REQUEST - send");
+			} else {
+			    infoLable.setIcon(new ImageIcon(RegisterFrame.class
+				    .getResource("/res/att.png")));
+			    infoLable.setForeground(Color.RED);
+			    infoLable
+				    .setText("<html><i>Ќету св€зи с сервером!</i></html>");
 			}
 		    } // если получилось св€затса с сервером,то отправл€ем
 		      // запрос на авторизацию
 		    else {
-			if (!SocketMaster.sendMess(new Mess(loginField
+			if (!SocketMaster.getInstance().sendMess(new Mess(loginField
 				.getText(), passField.getText(), emailField
 				.getText(), SocketMaster.REGISTER_REQUEST))) {
 			    infoLable.setIcon(new ImageIcon(RegisterFrame.class
@@ -104,7 +109,10 @@ public class RegisterFrame {
 			    infoLable.setForeground(Color.RED);
 			    infoLable
 				    .setText("<html><i>Ќету св€зи с сервером!</i></html>");
-			    SocketMaster.Sock = null;
+			    SocketMaster.getInstance().setTotalNullMdf();
+			    System.gc();
+			} else {
+			    System.out.println("REG_REQUEST - send");
 			}
 		    }
 
@@ -121,17 +129,17 @@ public class RegisterFrame {
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 	loginField = new JTextField();
-	loginField.setBounds(66, 21, 86, 20);
+	loginField.setBounds(44, 21, 137, 20);
 	loginField.addActionListener(doRegRequest);
 	loginField.setColumns(10);
 
 	passField = new JTextField();
-	passField.setBounds(66, 64, 86, 20);
+	passField.setBounds(44, 64, 137, 20);
 	passField.addActionListener(doRegRequest);
 	passField.setColumns(10);
 
 	emailField = new JTextField();
-	emailField.setBounds(44, 111, 137, 20);
+	emailField.setBounds(44, 106, 137, 20);
 	emailField.addActionListener(doRegRequest);
 	emailField.setColumns(10);
 
@@ -153,19 +161,19 @@ public class RegisterFrame {
 	});
 
 	JLabel lblLogin = new JLabel("Login");
-	lblLogin.setBounds(66, 6, 46, 14);
+	lblLogin.setBounds(44, 6, 46, 14);
 
 	JLabel lblPassword = new JLabel("Password");
-	lblPassword.setBounds(66, 52, 74, 14);
+	lblPassword.setBounds(44, 53, 74, 14);
 
 	JLabel lblEmail = new JLabel(
-		"email (\u043D\u0435 \u043E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u044C\u043D\u043E)");
-	lblEmail.setBounds(44, 89, 137, 26);
+		"Email (\u043D\u0435 \u043E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u044C\u043D\u043E)");
+	lblEmail.setBounds(44, 85, 137, 35);
 
 	infoLable = new JLabel("");
 
 	infoLable.setHorizontalAlignment(SwingConstants.LEFT);
-	infoLable.setBounds(32, 132, 161, 51);
+	infoLable.setBounds(16, 132, 207, 51);
 	infoLable.setFont(UIManager.getFont("ToolBar.font"));
 	frame.getContentPane().setLayout(null);
 	frame.getContentPane().add(registerButt);

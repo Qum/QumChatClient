@@ -25,6 +25,7 @@ import org.eclipse.wb.swing.FocusTraversalOnArray;
 import Qum.Mes.Mess;
 
 import java.awt.Font;
+import javax.swing.UIManager;
 
 public class StartFrame {
 
@@ -61,7 +62,7 @@ public class StartFrame {
      */
     private void initialize() {
 	RegisterFrame.initRegisterFrame();
-	CliFace.initCliFace();
+	CliFace.getInstance();
 	frame = new JFrame();
 	frame.setTitle("Hawaii Chat - Login");
 	frame.setResizable(false);
@@ -70,7 +71,7 @@ public class StartFrame {
 	frame.setBounds(100, 100, 235, 290);
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-	ActionListener doAutgRequest = new ActionListener() {
+	ActionListener doAuthRequest = new ActionListener() {
 
 	    public void actionPerformed(ActionEvent e) {
 		if (txtLogin.getText().isEmpty() || pwdPass.getText().isEmpty()) {
@@ -80,14 +81,15 @@ public class StartFrame {
 		    infoLable
 			    .setText("<html><i>Ћогин и пароль не  могут <br> быть пустыми!!</i></html>");
 		} else {
-		    if (SocketMaster.Sock == null) {
-			if (SocketMaster.initSocket()) {
-			    new Thread(new SocketMaster(), "SocketMaster")
-				    .start();
-			    SocketMaster.sendMess(new Mess(txtLogin.getText(),
-				    pwdPass.getText(),
-				    SocketMaster.AUTH_REQUEST));
+		    if (SocketMaster.getMainChatSocket() == null) {
+			if (SocketMaster.initMainSocket()) {
+			    SocketMaster.getInstance().sendMess(
+				    new Mess(txtLogin.getText(), pwdPass
+					    .getText(),
+					    SocketMaster.AUTH_REQUEST));
+			    System.out.println("AUTH_REQUEST - send");
 			} else {
+			    System.out.println("else");
 			    infoLable.setIcon(new ImageIcon(RegisterFrame.class
 				    .getResource("/res/att.png")));
 			    infoLable.setForeground(Color.RED);
@@ -97,26 +99,30 @@ public class StartFrame {
 		    } // если получилось св€затса с сервером,то отправл€ем
 		      // запрос на авторизацию
 		    else {
-			if (!SocketMaster.sendMess(new Mess(txtLogin.getText(),
-				pwdPass.getText(), SocketMaster.AUTH_REQUEST))) {
+			if (!SocketMaster.getInstance().sendMess(
+				new Mess(txtLogin.getText(), pwdPass.getText(),
+					SocketMaster.AUTH_REQUEST))) {
+			    System.out.println("ELSE - ! sended");
 			    infoLable.setIcon(new ImageIcon(RegisterFrame.class
 				    .getResource("/res/att.png")));
 			    infoLable.setForeground(Color.RED);
 			    infoLable
 				    .setText("<html><i>Ќету св€зи с сервером!</i></html>");
-			    SocketMaster.Sock = null;
-			}
+			    SocketMaster.getInstance().setTotalNullMdf();
+			    System.gc();
+			} else
+			    System.out.println("ELSE - sended");
 		    }
 		}
 	    }
 	};
 
 	JButton enterButt = new JButton("\u0412\u0445\u043E\u0434");
-	enterButt.setBounds(64, 151, 84, 25);
+	enterButt.setBounds(68, 157, 84, 23);
 	enterButt.setIcon(new ImageIcon(StartFrame.class
 		.getResource("/res/menuIcon_4.png")));
 	enterButt.setVerticalAlignment(SwingConstants.TOP);
-	enterButt.addActionListener(doAutgRequest);
+	enterButt.addActionListener(doAuthRequest);
 
 	JButton registerButt = new JButton(
 		"\u0420\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u044F");
@@ -132,10 +138,7 @@ public class StartFrame {
 
 	JButton restorPasswordButt = new JButton(
 		"\u0412\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u0435 \u043F\u0430\u0440\u043E\u043B\u044F");
-	restorPasswordButt.addActionListener(new ActionListener() {
-	    public void actionPerformed(ActionEvent arg0) {
-	    }
-	});
+
 	restorPasswordButt.setBounds(16, 218, 197, 23);
 	restorPasswordButt.setIcon(new ImageIcon(StartFrame.class
 		.getResource("/res/menuIcon_6.png")));
@@ -143,12 +146,12 @@ public class StartFrame {
 	txtLogin = new JTextField();
 	txtLogin.setBounds(42, 24, 140, 22);
 	txtLogin.setToolTipText("");
-	txtLogin.addActionListener(doAutgRequest);
+	txtLogin.addActionListener(doAuthRequest);
 	txtLogin.setColumns(10);
 
 	pwdPass = new JPasswordField();
 	pwdPass.setBounds(43, 80, 139, 22);
-	pwdPass.addActionListener(doAutgRequest);
+	pwdPass.addActionListener(doAuthRequest);
 
 	JLabel lblNewLabel = new JLabel("Login");
 	lblNewLabel.setBounds(42, 6, 31, 16);
@@ -158,10 +161,10 @@ public class StartFrame {
 
 	infoLable = new JLabel("");
 
-	infoLable.setFont(new Font("SansSerif", Font.PLAIN, 12));
+	infoLable.setFont(UIManager.getFont("ToolBar.font"));
 	infoLable.setHorizontalAlignment(SwingConstants.LEFT);
 	infoLable.setVerticalAlignment(SwingConstants.TOP);
-	infoLable.setBounds(6, 102, 217, 38);
+	infoLable.setBounds(16, 108, 207, 42);
 	frame.getContentPane().setLayout(null);
 	frame.getContentPane().add(lblNewLabel);
 	frame.getContentPane().add(lblNewLabel_1);
@@ -171,6 +174,86 @@ public class StartFrame {
 	frame.getContentPane().add(registerButt);
 	frame.getContentPane().add(enterButt);
 	frame.getContentPane().add(restorPasswordButt);
+
+	JButton btnNewButton = new JButton("User 2");
+	btnNewButton.addActionListener(new ActionListener() {
+	    public void actionPerformed(ActionEvent e) {
+		if (SocketMaster.getMainChatSocket() == null) {
+		    if (SocketMaster.initMainSocket()) {
+			SocketMaster.getInstance().sendMess(
+				new Mess("user", "pass",
+					SocketMaster.AUTH_REQUEST));
+			System.out.println("AUTH_REQUEST - send");
+		    } else {
+			System.out.println("else");
+			infoLable.setIcon(new ImageIcon(RegisterFrame.class
+				.getResource("/res/att.png")));
+			infoLable.setForeground(Color.RED);
+			infoLable
+				.setText("<html><i>Ќету св€зи с сервером!</i></html>");
+		    }
+		} // если получилось св€затса с сервером,то отправл€ем
+		  // запрос на авторизацию
+		else {
+		    if (!SocketMaster.getInstance()
+			    .sendMess(
+				    new Mess("user", "pass",
+					    SocketMaster.AUTH_REQUEST))) {
+			System.out.println("ELSE - ! sended");
+			infoLable.setIcon(new ImageIcon(RegisterFrame.class
+				.getResource("/res/att.png")));
+			infoLable.setForeground(Color.RED);
+			infoLable
+				.setText("<html><i>Ќету св€зи с сервером!</i></html>");
+			SocketMaster.getInstance().setTotalNullMdf();
+			System.gc();
+		    } else
+			System.out.println("ELSE - sended");
+		}
+	    }
+	});
+	btnNewButton.setBounds(115, 45, 97, 23);
+	frame.getContentPane().add(btnNewButton);
+
+	JButton btnTestUser = new JButton("User 1");
+	btnTestUser.addActionListener(new ActionListener() {
+	    public void actionPerformed(ActionEvent arg0) {
+		if (SocketMaster.getMainChatSocket() == null) {
+		    if (SocketMaster.initMainSocket()) {
+			SocketMaster.getInstance().sendMess(
+				new Mess("adm3", "pass",
+					SocketMaster.AUTH_REQUEST));
+			System.out.println("AUTH_REQUEST - send");
+		    } else {
+			System.out.println("else");
+			infoLable.setIcon(new ImageIcon(RegisterFrame.class
+				.getResource("/res/att.png")));
+			infoLable.setForeground(Color.RED);
+			infoLable
+				.setText("<html><i>Ќету св€зи с сервером!</i></html>");
+		    }
+		} // если получилось св€затса с сервером,то отправл€ем
+		  // запрос на авторизацию
+		else {
+		    if (!SocketMaster.getInstance()
+			    .sendMess(
+				    new Mess("adm3", "pass",
+					    SocketMaster.AUTH_REQUEST))) {
+			System.out.println("ELSE - ! sended");
+			infoLable.setIcon(new ImageIcon(RegisterFrame.class
+				.getResource("/res/att.png")));
+			infoLable.setForeground(Color.RED);
+			infoLable
+				.setText("<html><i>Ќету св€зи с сервером!</i></html>");
+			SocketMaster.getInstance().setTotalNullMdf();
+			System.gc();
+		    } else
+			System.out.println("ELSE - sended");
+		}
+	    }
+	});
+	btnTestUser.setBounds(6, 45, 97, 23);
+	frame.getContentPane().add(btnTestUser);
 	frame.getContentPane().setFocusTraversalPolicy(
 		new FocusTraversalOnArray(new Component[] { enterButt,
 			restorPasswordButt, registerButt }));
