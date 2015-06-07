@@ -249,9 +249,11 @@ public class CliFace {
 		     fb = new File(name);
 		    SocketMaster.getInstance().sendMess(new Mess(JOptionPane
 			    .showInputDialog("Кому ?"), fb.getName(), fb
-			    .length(), SocketMaster.getInstance().getMainChatSocket().getInetAddress()
+			    .length(), SocketMaster.getMainChatSocket().getInetAddress()
 			    .getHostAddress(), SocketMaster.FILE_REQUEST));
 		    FileTransporter.setFileSize(fb.length());
+		} else if (result == JFileChooser.CANCEL_OPTION) {
+		    return;
 		}
 	    }
 	});

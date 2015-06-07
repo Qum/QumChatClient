@@ -21,8 +21,7 @@ public class FileTransporter {
 
     private static String sendFileName;
     private static long fileSize;
-    private static Socket FileSocket;
-
+//    private static Socket FileSocket;
     /**
      * @return the fileSize
      */
@@ -91,15 +90,17 @@ public class FileTransporter {
 	new AskObj(senderNick, senderIp);
     }
 
-    public static void doRecive(String Ip) { // не готов
+    public static void doRecive(String Ip) throws IOException { 
 	System.out.println("Прием ");
+	ServerSocket SS = new ServerSocket(9091);
 	new Thread(new Runnable() {
 
 	    @Override
 	    public void run() {
+		 Socket FileSocket = null;
 		if (FileSocket == null) {
 		    try {
-			FileSocket = new ServerSocket(9091).accept();
+			FileSocket = SS.accept();
 			FileSocket.setReceiveBufferSize(1048576);
 		    } catch (IOException e2) {
 			e2.printStackTrace();
@@ -114,7 +115,7 @@ public class FileTransporter {
 			System.out.println("getInetAddress"
 				+ FileSocket.getInetAddress());
 			System.out.println("Ip"+Ip);
-			FileSocket = new ServerSocket(9091).accept();
+			FileSocket = SS.accept();
 			FileSocket.setReceiveBufferSize(1048576);
 		    } catch (IOException e2) {
 			e2.printStackTrace();
@@ -176,6 +177,7 @@ public class FileTransporter {
 			if (FileSocket != null && FileSocket.isConnected()) {
 			    System.out.println("finall re if");
 			    FileSocket.close();
+			    SS.close();
 			}
 		    } catch (IOException e) {
 			System.out.println("finall re if ex");
@@ -190,15 +192,15 @@ public class FileTransporter {
 
     public static void doSend(String Ip) throws IOException { // не готов
 	System.out.println("Передача");
-
 	new Thread(new Runnable() {
 
 	    @Override
 	    public void run() {
-
+		 Socket FileSocket = null;
 		if (FileSocket == null) {
 		    try {
-			FileSocket = SocketMaster.getSocket(Ip, 9091);
+			FileSocket = new Socket(Ip,9091) ;
+//				SocketMaster.getSocket(Ip, 9091);
 			FileSocket.setReceiveBufferSize(1048576);
 		    } catch (IOException e2) {
 			e2.printStackTrace();
@@ -207,7 +209,8 @@ public class FileTransporter {
 			.equals(Ip) && FileSocket.isClosed())
 			|| FileSocket.isClosed()) {
 		    try {
-			FileSocket = SocketMaster.getSocket(Ip, 9091);
+			FileSocket = new Socket(Ip,9091) ;
+//				SocketMaster.getSocket(Ip, 9091);
 			FileSocket.setReceiveBufferSize(1048576);
 		    } catch (IOException e2) {
 			e2.printStackTrace();
