@@ -1,6 +1,14 @@
 package Qum.Client;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.Formatter;
 
 import javax.swing.JOptionPane;
@@ -66,28 +74,27 @@ public class FileTransporter {
 
     public static void doRecive(String Ip) { // не готов
 
-	JOptionPane.showMessageDialog(null, "<html><i>Принимаю.</i></html>",
-		CliFace.MyNick, JOptionPane.YES_NO_CANCEL_OPTION);
-	// try {
+	// JOptionPane.showMessageDialog(null, "<html><i>Принимаю.</i></html>",
+	// CliFace.MyNick, JOptionPane.YES_NO_CANCEL_OPTION);
+	
+	try {
 
-	// ServerSocket SS = new ServerSocket(9091, 5);
-	// Socket S = SS.accept();
-	//
-	//
-	//
-	// File fb = new File("C:/Users/ZM/Desktop/reciv/" + sendFileName);
-	// InputStream bin = new BufferedInputStream(S.getInputStream(),
-	// 131072);
-	// OutputStream Ous = new BufferedOutputStream(new FileOutputStream(
-	// CliFace.fb), 131072);
-	// byte[] buffArr = null;
-	// while(bin.read(buffArr) != -1){
-	//
-	// }
-	//
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// }
+	    ServerSocket SS = new ServerSocket(9091, 5);
+	    Socket S = SS.accept();
+
+	    File fb = new File("C:/Users/ZM/Desktop/reciv/" + sendFileName);
+	    InputStream bin = new BufferedInputStream(S.getInputStream(),
+		    131072);
+	    OutputStream Ous = new BufferedOutputStream(new FileOutputStream(
+		    CliFace.fb), 131072);
+	    byte[] buffArr = null;
+	    while (bin.read(buffArr) != -1) {
+
+	    }
+
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
     }
 
     public static void doSend(String Ip) throws IOException { // не готов
