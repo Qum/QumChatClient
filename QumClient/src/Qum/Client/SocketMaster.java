@@ -42,14 +42,14 @@ public class SocketMaster extends Thread {
     final static int CHANGE_NAME = 12;
     final static int CHANGE_NAME_SUCCESS = 13;
     final static int CHANGE_NAME_FAIL = 14;
-    
+
     public static SocketMaster getInstance() {
 	if (SMaster == null || SMaster.getState() == Thread.State.TERMINATED) {
 	    System.err.println("SMaster = null - " + SMaster);
 	    SMaster = new SocketMaster();
-	   
+
 	    SMaster.start();
-	    
+
 	} else {
 	    System.err.println("SMaster != null");
 	}
@@ -118,12 +118,6 @@ public class SocketMaster extends Thread {
 		BuffMesObj = (Mess) Oin.readObject();
 		if (BuffMesObj.getServiceCode() > 0) {
 		    if (BuffMesObj.getServiceCode() == AUTH_FAIL) {
-			
-			JOptionPane.showMessageDialog(null,
-				"Пользователь отказался принимать файл!",
-				"Error!", JOptionPane.ERROR_MESSAGE);
-			
-			
 			System.out.println("AUTH_FAIL");
 			StartFrame.infoLable.setIcon(new ImageIcon(
 				StartFrame.class.getResource("/res/att.png")));
@@ -131,9 +125,15 @@ public class SocketMaster extends Thread {
 			StartFrame.infoLable
 				.setText("<html><i>Неправильный логин или пароль!!</i></html>");
 		    } else if (BuffMesObj.getServiceCode() == SUCCESS_AUTH_SUCCESS_ONLINE) {
-			CliFace.MyNick = BuffMesObj.getValue1();
+			CliFace.getInstance().setMyNick(BuffMesObj.getValue1());
+			// CliFace.getInstance().getCurrentUserIs().setText("   "+BuffMesObj.getValue1());
+			CliFace.getInstance()
+				.getFrame()
+				.setTitle(
+					"Hawaii Chat      "
+						+ BuffMesObj.getValue1());
 			StartFrame.frame.setVisible(false);
-			CliFace.face.frmQumChat.setVisible(true);
+			CliFace.getInstance().getFrame().setVisible(true);
 		    } else if (BuffMesObj.getServiceCode() == SUCCESS_AUTH_ALREADY_ONLINE) {
 			StartFrame.infoLable.setIcon(new ImageIcon(
 				StartFrame.class.getResource("/res/att.png")));
@@ -141,9 +141,11 @@ public class SocketMaster extends Thread {
 			StartFrame.infoLable
 				.setText("<html><i>Этот пользователь уже в сети!!</i></html>");
 		    } else if (BuffMesObj.getServiceCode() == REGISTER_SUCCESS) {
-			CliFace.MyNick = BuffMesObj.getValue1();
+			CliFace.getInstance().setMyNick(BuffMesObj.getValue1());
+			CliFace.getInstance().getCurrentUserIs()
+				.setText("   " + BuffMesObj.getValue1());
 			RegisterFrame.frame.setVisible(false);
-			CliFace.face.frmQumChat.setVisible(true);
+			CliFace.getInstance().getFrame().setVisible(true);
 		    } else if (BuffMesObj.getServiceCode() == REGISTER_FAIL) {
 			RegisterFrame.infoLable
 				.setIcon(new ImageIcon(RegisterFrame.class
@@ -163,7 +165,7 @@ public class SocketMaster extends Thread {
 				"Пользователь отказался принимать файл!",
 				"Error!", JOptionPane.ERROR_MESSAGE);
 		    }
-		} else {
+		}  else {
 		    CliFace.getInstance().showText(
 			    BuffMesObj.getValue1() + " : "
 				    + BuffMesObj.getValue2() + newline);
@@ -201,6 +203,7 @@ public class SocketMaster extends Thread {
 	    interrupt();
 	}
     }
+
     public void setTotalNullMdf() {
 	System.out.println("setTotalNullMdf");
 	MainChatSocket = null;
@@ -208,6 +211,7 @@ public class SocketMaster extends Thread {
 	Oin = null;
 	Oou = null;
     }
+
     public static Socket getMainChatSocket() {
 	return MainChatSocket;
     }

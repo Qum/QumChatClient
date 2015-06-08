@@ -30,32 +30,34 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 import Qum.Mes.Mess;
+import javax.swing.JLabel;
 
 public class CliFace {
 
-    public static CliFace face;
+    private static CliFace face;
 
-    public JFrame frmQumChat;
+    private JFrame frame;
 
     private static File fb;
-    
+
     public static File getFb() {
-        return fb;
+	return fb;
     }
 
     private JTextField textEnter;
-    
+
     private JTextArea textArea;
 
     static Date date = new Date();
 
-    public static String MyNick, buffnick = null;
+    private String MyNick;
 
     // private static File prop;
     // private static Properties sett;
     protected FileInputStream in;
     static int win_WIDTH = 110;
     static int win_HEIGHT = 110;
+    private JLabel CurrentUserIs = new JLabel();
 
     private CliFace() {
 	initialize();
@@ -77,13 +79,13 @@ public class CliFace {
     }
 
     private void initialize() {
-	frmQumChat = new JFrame();
-	frmQumChat.setTitle("Hawaii Chat");
-	frmQumChat.setResizable(false);
-	frmQumChat.setIconImage(Toolkit.getDefaultToolkit().getImage(
+	frame = new JFrame();
+	frame.setTitle("Hawaii Chat");
+	frame.setResizable(false);
+	frame.setIconImage(Toolkit.getDefaultToolkit().getImage(
 		CliFace.class.getResource("/res/ico.png")));
-	frmQumChat.setBounds(100, 100, 550, 360);
-	frmQumChat.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	frame.setBounds(100, 100, 550, 360);
+	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 	// String root_papka = System.getProperty("user.home");
 	// File propdr = new File(root_papka, ".chatik");
@@ -122,7 +124,7 @@ public class CliFace {
 	// win_HEIGHT = Integer.parseInt(sett.getProperty("высота окна"));
 	// if (MyNick.isEmpty())
 	// greetingQuest();
-	
+
 	textArea = new JTextArea();
 	textArea.setBorder(new LineBorder(new Color(0, 0, 0)));
 	textArea.setFocusable(false);
@@ -156,8 +158,9 @@ public class CliFace {
 		    text = textEnter.getText();
 		}
 
-		if (!SocketMaster.getInstance().sendMess(new Mess(SocketMaster.dateFormat
-			.format(date) + " " + MyNick, text))) {
+		if (!SocketMaster.getInstance().sendMess(
+			new Mess(SocketMaster.dateFormat.format(date) + " "
+				+ MyNick, text))) {
 		    System.out.println("CliFace : Err in Text Action");
 		    textArea.append(("SYS : Нету связи с сервером.")
 			    + SocketMaster.newline);
@@ -171,12 +174,12 @@ public class CliFace {
 	textEnter.setBackground(SystemColor.activeCaption);
 	textEnter.setColumns(1);
 	textArea.setBackground(SystemColor.inactiveCaption);
-	frmQumChat.getContentPane().setLayout(null);
-	frmQumChat.getContentPane().add(textEnter);
-	frmQumChat.getContentPane().add(scrollPane);
+	frame.getContentPane().setLayout(null);
+	frame.getContentPane().add(textEnter);
+	frame.getContentPane().add(scrollPane);
 
 	JMenuBar menuBar = new JMenuBar();
-	frmQumChat.setJMenuBar(menuBar);
+	frame.setJMenuBar(menuBar);
 
 	JMenu mnNewMenu = new JMenu("Меню");
 	mnNewMenu.setHideActionText(true);
@@ -195,18 +198,37 @@ public class CliFace {
 
 	menuItem.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent e) {
-		buffnick = JOptionPane.showInputDialog("Новый ник");
-		if (buffnick.equalsIgnoreCase("admin")
-			|| buffnick.equalsIgnoreCase("root")
-			|| buffnick.equalsIgnoreCase("sys")) {
+		String tempName = JOptionPane.showInputDialog("Новый ник");
+
+		if (tempName == null) {
+		    return;
+		} else if (tempName.length() > 20) {
 		    JOptionPane
 			    .showMessageDialog(
 				    null,
-				    "<html><h1><i>Это технический ник!!</i></h1><hr>&#822;н&#822;е&#822;х&#822;у&#822;й&#822; &#822;м&#822;у&#822;д&#822;р&#822;и&#822;т&#822;ь&#822; </html>",
+				    "<html><h1><i>Ник не может быть длиннее 20ти символов.</i></h1><hr> </html>",
 				    "information",
 				    JOptionPane.YES_NO_CANCEL_OPTION);
 		    actionPerformed(e);
-		} else if (buffnick.isEmpty()) {
+		} else if (tempName.equalsIgnoreCase("admin")
+			|| tempName.equalsIgnoreCase("root")
+			|| tempName.equalsIgnoreCase("sys")) {
+		    JOptionPane
+			    .showMessageDialog(
+				    null,
+				    "<html><h1><i>Это технический ник!!</i></h1><hr> </html>",
+				    "information",
+				    JOptionPane.YES_NO_CANCEL_OPTION);
+		    actionPerformed(e);
+		} else if (tempName.equalsIgnoreCase(MyNick)) {
+		    JOptionPane
+			    .showMessageDialog(
+				    null,
+				    "<html><h1><i>Этот ник уже у Вас.</i></h1><hr> </html>",
+				    "information",
+				    JOptionPane.YES_NO_CANCEL_OPTION);
+		    actionPerformed(e);
+		} else if (tempName.isEmpty()) {
 		    JOptionPane
 			    .showMessageDialog(
 				    null,
@@ -214,8 +236,9 @@ public class CliFace {
 				    "information",
 				    JOptionPane.YES_NO_CANCEL_OPTION);
 		    actionPerformed(e);
-		} else
-		    MyNick = buffnick;
+		} else {
+		    SocketMaster.getInstance().sendMess(new Mess(tempName,"",SocketMaster.CHANGE_NAME));
+		}
 	    }
 	});
 
@@ -226,6 +249,7 @@ public class CliFace {
 	menuItem_2.setIcon(new ImageIcon(CliFace.class
 		.getResource("/res/menuIcon_3.png")));
 	mnNewMenu.add(menuItem_2);
+	menuBar.add(CurrentUserIs);
 
 	menuItem_2.addActionListener(new ActionListener() {
 
@@ -246,11 +270,13 @@ public class CliFace {
 		int result = MisterCho.showOpenDialog(null);
 		if (result == JFileChooser.APPROVE_OPTION) {
 		    String name = MisterCho.getSelectedFile().getPath();
-		     fb = new File(name);
-		    SocketMaster.getInstance().sendMess(new Mess(JOptionPane
-			    .showInputDialog("Кому ?"), fb.getName(), fb
-			    .length(), SocketMaster.getMainChatSocket().getInetAddress()
-			    .getHostAddress(), SocketMaster.FILE_REQUEST));
+		    fb = new File(name);
+		    SocketMaster.getInstance().sendMess(
+			    new Mess(JOptionPane.showInputDialog("Кому ?"), fb
+				    .getName(), fb.length(), SocketMaster
+				    .getMainChatSocket().getInetAddress()
+				    .getHostAddress(),
+				    SocketMaster.FILE_REQUEST));
 		    FileTransporter.setFileSize(fb.length());
 		} else if (result == JFileChooser.CANCEL_OPTION) {
 		    return;
@@ -258,55 +284,84 @@ public class CliFace {
 	    }
 	});
 
-	frmQumChat.addWindowListener(new WindowAdapter() { // сейвим пропы по
-		    // закрытию окна
-		    public void windowClosing(WindowEvent event) {
+	frame.addWindowListener(new WindowAdapter() { // сейвим пропы по
+	    // закрытию окна
+	    public void windowClosing(WindowEvent event) {
 
-			SocketMaster.getInstance().sendMess(new Mess(" ", "",
-				SocketMaster.LOGOUT));
+		SocketMaster.getInstance().sendMess(
+			new Mess(" ", "", SocketMaster.LOGOUT));
 
-			// sett.put("WIDTH", "" + frame.getWidth());
-			// sett.put("HEIGHT", "" + frame.getHeight());
-			// sett.put("Nick", MyNick);
-			// try {
-			// FileOutputStream out = new FileOutputStream(prop);
-			// sett.store(out, "prog options");
-			// } catch (IOException e) {
-			// System.out
-			// .println("Фреймчат : какаето хуйня с сейвом пропов");
-			// }
-		    }
-		});
-	frmQumChat.setSize(528, 320);
+		// sett.put("WIDTH", "" + frame.getWidth());
+		// sett.put("HEIGHT", "" + frame.getHeight());
+		// sett.put("Nick", MyNick);
+		// try {
+		// FileOutputStream out = new FileOutputStream(prop);
+		// sett.store(out, "prog options");
+		// } catch (IOException e) {
+		// System.out
+		// .println("Фреймчат : какаето хуйня с сейвом пропов");
+		// }
+	    }
+	});
+	frame.setSize(528, 320);
     }
 
-    public void showText(String text){
+    public void showText(String text) {
 	textArea.append(text);
     }
-//    public static void greetingQuest() {  Уже не используется
-//	System.out.println("frame : Gree in");
-//	if (MyNick == null) {
-//	    System.out.println("frame : MyNick == null");
-//	    buffnick = JOptionPane.showInputDialog("Придумай ник");
-//	    if (buffnick.equals("root")) {
-//		System.out.println("frame : buffnick.equals root");
-//		JOptionPane
-//			.showMessageDialog(
-//				null,
-//				"<html><h1><i>Это технический ник!!</i></h1><hr>&#822;н&#822;е&#822;х&#822;у&#822;й&#822; &#822;м&#822;у&#822;д&#822;р&#822;и&#822;т&#822;ь&#822; </html>",
-//				"information", JOptionPane.YES_NO_CANCEL_OPTION);
-//		greetingQuest();
-//	    } else if (buffnick.isEmpty()) {
-//		System.out.println("frame : buffnick==null");
-//		JOptionPane
-//			.showMessageDialog(
-//				null,
-//				"<html><h1><i>Ник не может быть пустым!</i></h1></html>",
-//				"information", JOptionPane.YES_NO_CANCEL_OPTION);
-//		greetingQuest();
-//	    } else {
-//		MyNick = buffnick;
-//	    }
-//	}
-//    }
+
+    /**
+     * @return the frame
+     */
+    public JFrame getFrame() {
+	return frame;
+    }
+
+    /**
+     * @return the currentUserIs
+     */
+    public JLabel getCurrentUserIs() {
+	return CurrentUserIs;
+    }
+
+    /**
+     * @return the myNick
+     */
+    public String getMyNick() {
+	return MyNick;
+    }
+
+    /**
+     * @param myNick
+     *            the myNick to set
+     */
+    public void setMyNick(String myNick) {
+	MyNick = myNick;
+    }
+    // public static void greetingQuest() { Уже не используется
+    // System.out.println("frame : Gree in");
+    // if (MyNick == null) {
+    // System.out.println("frame : MyNick == null");
+    // tempName = JOptionPane.showInputDialog("Придумай ник");
+    // if (tempName.equals("root")) {
+    // System.out.println("frame : tempName.equals root");
+    // JOptionPane
+    // .showMessageDialog(
+    // null,
+    // "<html><h1><i>Это технический ник!!</i></h1><hr>&#822;н&#822;е&#822;х&#822;у&#822;й&#822; &#822;м&#822;у&#822;д&#822;р&#822;и&#822;т&#822;ь&#822; </html>",
+    // "information", JOptionPane.YES_NO_CANCEL_OPTION);
+    // greetingQuest();
+    // } else if (tempName.isEmpty()) {
+    // System.out.println("frame : tempName==null");
+    // JOptionPane
+    // .showMessageDialog(
+    // null,
+    // "<html><h1><i>Ник не может быть пустым!</i></h1></html>",
+    // "information", JOptionPane.YES_NO_CANCEL_OPTION);
+    // greetingQuest();
+    // } else {
+    // MyNick = tempName;
+    // }
+    // }
+    // }
 }

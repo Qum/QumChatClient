@@ -14,6 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
@@ -30,7 +31,7 @@ public class RegisterFrame {
     static RegisterFrame RegFr;
     static JFrame frame;
     private JTextField loginField;
-    private JTextField passField;
+    private JPasswordField passField;
     private JTextField emailField;
 
     /**
@@ -66,7 +67,7 @@ public class RegisterFrame {
 
 	    public void actionPerformed(ActionEvent e) {
 		if (loginField.getText().isEmpty()
-			|| passField.getText().isEmpty()) {
+			|| String.valueOf(passField.getPassword()).isEmpty()) {
 
 		    infoLable.setIcon(new ImageIcon(RegisterFrame.class
 			    .getResource("/res/att.png")));
@@ -87,7 +88,7 @@ public class RegisterFrame {
 		    if (SocketMaster.getMainChatSocket() == null) {
 			if (SocketMaster.initMainSocket()) {
 			    SocketMaster.getInstance().sendMess(new Mess(
-				    loginField.getText(), passField.getText(),
+				    loginField.getText(), String.valueOf(passField.getPassword()),
 				    emailField.getText(),
 				    SocketMaster.REGISTER_REQUEST));
 			    System.out.println("REG_REQUEST - send");
@@ -128,12 +129,14 @@ public class RegisterFrame {
 	frame.setBounds(100, 100, 235, 290);
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-	loginField = new JTextField();
+	loginField = new JTextField(20);
+	loginField.setToolTipText("\u043C\u0430\u043A\u0441\u0438\u043C\u0443\u043C 20 \u0441\u0438\u043C\u0432\u043E\u043B\u043E\u0432");
 	loginField.setBounds(44, 21, 137, 20);
 	loginField.addActionListener(doRegRequest);
 	loginField.setColumns(10);
 
-	passField = new JTextField();
+	passField = new JPasswordField(20);
+	passField.setToolTipText("\u043C\u0430\u043A\u0441\u0438\u043C\u0443\u043C 20 \u0441\u0438\u043C\u0432\u043E\u043B\u043E\u0432");
 	passField.setBounds(44, 64, 137, 20);
 	passField.addActionListener(doRegRequest);
 	passField.setColumns(10);

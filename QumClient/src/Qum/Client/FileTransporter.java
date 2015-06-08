@@ -50,7 +50,7 @@ public class FileTransporter {
 	sendFileName = fileName;
 	fileSize = size;
 
-	System.out.println(CliFace.MyNick + "FILE_REQUEST");
+	System.out.println(CliFace.getInstance().getMyNick() + "FILE_REQUEST");
 	class AskObj {
 	    String whoSendReqest, fileSenderIp;
 
@@ -61,7 +61,7 @@ public class FileTransporter {
 	    }
 
 	    void init() throws IOException {
-		System.err.println(CliFace.MyNick
+		System.err.println(CliFace.getInstance().getMyNick()
 			+ "Создался AskObj - защел в init");
 
 		Formatter f = new Formatter();
@@ -138,7 +138,7 @@ public class FileTransporter {
 			    .showMessageDialog(
 				    null,
 				    "<html><i>Не получилось соеденится с отправителем!!</i></html>",
-				    CliFace.MyNick,
+				    CliFace.getInstance().getMyNick(),
 				    JOptionPane.YES_NO_CANCEL_OPTION);
 		}
 
@@ -232,7 +232,7 @@ public class FileTransporter {
 			    .showMessageDialog(
 				    null,
 				    "<html><i>Не получилось соеденится с получателем!!</i></html>",
-				    CliFace.MyNick,
+				    CliFace.getInstance().getMyNick(),
 				    JOptionPane.YES_NO_CANCEL_OPTION);
 		}
 		try (OutputStream Ous = new BufferedOutputStream(FileSocket

@@ -6,26 +6,19 @@ import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 
 import org.eclipse.wb.swing.FocusTraversalOnArray;
 
 import Qum.Mes.Mess;
-
-import java.awt.Font;
-import javax.swing.UIManager;
 
 public class StartFrame {
 
@@ -52,6 +45,7 @@ public class StartFrame {
 
     /**
      * Create the application.
+     * @wbp.parser.entryPoint
      */
     public StartFrame() {
 	initialize();
@@ -74,18 +68,17 @@ public class StartFrame {
 	ActionListener doAuthRequest = new ActionListener() {
 
 	    public void actionPerformed(ActionEvent e) {
-		if (txtLogin.getText().isEmpty() || pwdPass.getText().isEmpty()) {
+		if (txtLogin.getText().isEmpty() || String.valueOf(pwdPass.getPassword()).isEmpty()) {
 		    infoLable.setIcon(new ImageIcon(StartFrame.class
 			    .getResource("/res/att.png")));
-		    infoLable.setForeground(Color.RED);
+		    infoLable.setForeground(Color.RED);  
 		    infoLable
 			    .setText("<html><i>Логин и пароль не  могут <br> быть пустыми!!</i></html>");
 		} else {
 		    if (SocketMaster.getMainChatSocket() == null) {
 			if (SocketMaster.initMainSocket()) {
 			    SocketMaster.getInstance().sendMess(
-				    new Mess(txtLogin.getText(), pwdPass
-					    .getText(),
+				    new Mess(txtLogin.getText(), String.valueOf(pwdPass.getPassword()),
 					    SocketMaster.AUTH_REQUEST));
 			    System.out.println("AUTH_REQUEST - send");
 			} else {
@@ -100,7 +93,7 @@ public class StartFrame {
 		      // запрос на авторизацию
 		    else {
 			if (!SocketMaster.getInstance().sendMess(
-				new Mess(txtLogin.getText(), pwdPass.getText(),
+				new Mess(txtLogin.getText(), String.valueOf(pwdPass.getPassword()),
 					SocketMaster.AUTH_REQUEST))) {
 			    System.out.println("ELSE - ! sended");
 			    infoLable.setIcon(new ImageIcon(RegisterFrame.class
@@ -143,13 +136,14 @@ public class StartFrame {
 	restorPasswordButt.setIcon(new ImageIcon(StartFrame.class
 		.getResource("/res/menuIcon_6.png")));
 
-	txtLogin = new JTextField();
+	txtLogin = new JTextField(20);
 	txtLogin.setBounds(42, 24, 140, 22);
 	txtLogin.setToolTipText("");
 	txtLogin.addActionListener(doAuthRequest);
 	txtLogin.setColumns(10);
 
-	pwdPass = new JPasswordField();
+	pwdPass = new JPasswordField(20);
+	pwdPass.setToolTipText("");
 	pwdPass.setBounds(43, 80, 139, 22);
 	pwdPass.addActionListener(doAuthRequest);
 
