@@ -1,4 +1,4 @@
-package qum.Client;
+package qum.chatClient;
 
 import java.awt.Color;
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.util.Date;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
-import qum.Mes.Mess;
+import qum.messageClass.Mess;
 
 public class SocketMaster extends Thread {
 

@@ -1,4 +1,4 @@
-package qum.Client;
+package qum.chatClient;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -28,7 +28,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
-import qum.Mes.Mess;
+import qum.messageClass.Mess;
 
 public class CliFace {
 

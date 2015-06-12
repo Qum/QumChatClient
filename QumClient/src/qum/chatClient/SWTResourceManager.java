@@ -8,7 +8,7 @@
  * Contributors:
  *    Google, Inc. - initial API and implementation
  *******************************************************************************/
-package qum.Client;
+package qum.chatClient;
 
 import java.io.FileInputStream;
 import java.io.IOException;

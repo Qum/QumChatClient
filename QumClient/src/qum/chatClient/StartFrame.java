@@ -1,4 +1,4 @@
-package qum.Client;
+package qum.chatClient;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -18,7 +18,7 @@ import javax.swing.UIManager;
 
 import org.eclipse.wb.swing.FocusTraversalOnArray;
 
-import qum.Mes.Mess;
+import qum.messageClass.Mess;
 
 public class StartFrame {
 

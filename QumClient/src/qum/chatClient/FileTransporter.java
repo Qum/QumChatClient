@@ -1,4 +1,4 @@
-package qum.Client;
+package qum.chatClient;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -15,7 +15,7 @@ import java.util.Formatter;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
-import qum.Mes.Mess;
+import qum.messageClass.Mess;
 
 public class FileTransporter {
 

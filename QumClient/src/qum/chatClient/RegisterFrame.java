@@ -1,4 +1,4 @@
-package qum.Client;
+package qum.chatClient;
 
 import java.awt.Color;
 import java.awt.EventQueue;
@@ -17,7 +17,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
-import qum.Mes.Mess;
+import qum.messageClass.Mess;
 
 public class RegisterFrame {
     static JLabel infoLable;
