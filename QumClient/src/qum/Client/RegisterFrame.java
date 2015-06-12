@@ -1,30 +1,23 @@
-package Qum.Client;
+package qum.Client;
 
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.LayoutStyle.ComponentPlacement;
-
-import Qum.Mes.Mess;
-
-import javax.swing.UIManager;
 import javax.swing.SwingConstants;
-import javax.swing.ImageIcon;
+import javax.swing.UIManager;
 
-import java.awt.Color;
+import qum.Mes.Mess;
 
 public class RegisterFrame {
     static JLabel infoLable;

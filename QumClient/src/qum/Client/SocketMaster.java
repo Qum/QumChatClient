@@ -1,4 +1,4 @@
-package Qum.Client;
+package qum.Client;
 
 import java.awt.Color;
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.util.Date;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
-import Qum.Mes.Mess;
+import qum.Mes.Mess;
 
 public class SocketMaster extends Thread {
 
@@ -126,7 +126,6 @@ public class SocketMaster extends Thread {
 				.setText("<html><i>Неправильный логин или пароль!!</i></html>");
 		    } else if (BuffMesObj.getServiceCode() == SUCCESS_AUTH_SUCCESS_ONLINE) {
 			CliFace.getInstance().setMyNick(BuffMesObj.getValue1());
-			// CliFace.getInstance().getCurrentUserIs().setText("   "+BuffMesObj.getValue1());
 			CliFace.getInstance()
 				.getFrame()
 				.setTitle(

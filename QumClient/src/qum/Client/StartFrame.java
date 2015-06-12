@@ -1,4 +1,4 @@
-package Qum.Client;
+package qum.Client;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -18,7 +18,7 @@ import javax.swing.UIManager;
 
 import org.eclipse.wb.swing.FocusTraversalOnArray;
 
-import Qum.Mes.Mess;
+import qum.Mes.Mess;
 
 public class StartFrame {
 

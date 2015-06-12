@@ -8,7 +8,7 @@
  * Contributors:
  *    Google, Inc. - initial API and implementation
  *******************************************************************************/
-package Qum.Client;
+package qum.Client;
 
 import java.io.FileInputStream;
 import java.io.IOException;

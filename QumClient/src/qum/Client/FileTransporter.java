@@ -1,4 +1,4 @@
-package Qum.Client;
+package qum.Client;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -15,7 +15,7 @@ import java.util.Formatter;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
-import Qum.Mes.Mess;
+import qum.Mes.Mess;
 
 public class FileTransporter {
 
@@ -49,16 +49,8 @@ public class FileTransporter {
 	    long size, String senderIp) throws IOException {
 	sendFileName = fileName;
 	fileSize = size;
-
-	System.out.println(CliFace.getInstance().getMyNick() + "FILE_REQUEST");
+	CliFace.getInstance().showText(CliFace.getInstance().getMyNick() + "FILE_REQUEST");
 	class AskObj {
-	    String whoSendReqest, fileSenderIp;
-
-	    AskObj(String Name, String Ip) throws IOException {
-		whoSendReqest = Name;
-		fileSenderIp = Ip;
-		init();
-	    }
 
 	    void init() throws IOException {
 		System.err.println(CliFace.getInstance().getMyNick()
@@ -76,51 +68,50 @@ public class FileTransporter {
 				JOptionPane.QUESTION_MESSAGE);
 		if (response == 0) { // Да,принять файл
 		    SocketMaster.getInstance().sendMess(
-			    new Mess(whoSendReqest, "",
+			    new Mess(senderNick, "",
 				    SocketMaster.FILE_REQUEST_SUCCESS));
-		    doRecive(fileSenderIp);
+		    doRecive(senderIp);
 		} else if (response == 1 || response == -1) { // нет, не
 							      // принимать
 		    SocketMaster.getInstance().sendMess(
-			    new Mess(whoSendReqest, "",
+			    new Mess(senderNick, "",
 				    SocketMaster.FILE_REQUEST_FAIL));
 		}
 	    }
 	}
-	new AskObj(senderNick, senderIp);
+	new AskObj().init();
     }
 
     public static void doRecive(String Ip) throws IOException { 
-	System.out.println("Прием ");
-	ServerSocket SS = new ServerSocket(9091);
+	CliFace.getInstance().showText("Прием ");
 	new Thread(new Runnable() {
 
 	    @Override
 	    public void run() {
 		 Socket FileSocket = null;
-		if (FileSocket == null) {
+//		if (FileSocket == null) {
 		    try {
-			FileSocket = SS.accept();
+			FileSocket = new ServerSocket(9091).accept();
 			FileSocket.setReceiveBufferSize(1048576);
 		    } catch (IOException e2) {
 			e2.printStackTrace();
 		    }
-		} else if ((FileSocket.getInetAddress().getHostAddress()
-			.equals(Ip) && FileSocket.isClosed())
-			|| FileSocket.isClosed()) {
-		    try {
-			System.out.println("else if ");
-			System.out.println("getRemoteSocketAddress"
-				+ FileSocket.getRemoteSocketAddress());
-			System.out.println("getInetAddress"
-				+ FileSocket.getInetAddress());
-			System.out.println("Ip"+Ip);
-			FileSocket = SS.accept();
-			FileSocket.setReceiveBufferSize(1048576);
-		    } catch (IOException e2) {
-			e2.printStackTrace();
-		    }
-		}
+////		} else if ((FileSocket.getInetAddress().getHostAddress()
+//			.equals(Ip) && FileSocket.isClosed())
+//			|| FileSocket.isClosed()) {
+//		    try {
+//			CliFace.getInstance().showText("else if ");
+//			CliFace.getInstance().showText("getRemoteSocketAddress"
+//				+ FileSocket.getRemoteSocketAddress());
+//			CliFace.getInstance().showText("getInetAddress"
+//				+ FileSocket.getInetAddress());
+//			CliFace.getInstance().showText("Ip"+Ip);
+//			FileSocket = SS.accept();
+//			FileSocket.setReceiveBufferSize(1048576);
+//		    } catch (IOException e2) {
+//			e2.printStackTrace();
+//		    }
+//		}
 
 		File RecivedFile = null;
 		JFileChooser fc = new JFileChooser();
@@ -143,26 +134,26 @@ public class FileTransporter {
 		}
 
 		try (BufferedInputStream bin = new BufferedInputStream(
-			FileSocket.getInputStream(), 209715200);
+			FileSocket.getInputStream(), 20971520);
 			BufferedOutputStream Ous = new BufferedOutputStream(
-				new FileOutputStream(RecivedFile), 209715200);) {
-		    System.out.println("getRemoteSocketAddress"
+				new FileOutputStream(RecivedFile), 20971520);) {
+		    CliFace.getInstance().showText("getRemoteSocketAddress"
 			    + FileSocket.getRemoteSocketAddress());
-		    System.out.println("getInetAddress"
+		    CliFace.getInstance().showText("getInetAddress"
 			    + FileSocket.getInetAddress());
-		    System.out.println("Прием - дал сокет ОК");
-		    byte[] buffArr = new byte[209715200];
+		    CliFace.getInstance().showText("Прием - дал сокет ОК");
+		    byte[] buffArr = new byte[20971520];
 		    long readed = 0;
 		    int recivd = 0;
 		    while ((recivd = bin.read(buffArr)) != -1
 			    && fileSize >= readed) {
-			System.out.println("Прием - WHILE");
+			CliFace.getInstance().showText("Прием - WHILE");
 			readed += recivd;
 			Ous.write(buffArr, 0, recivd);
 			Ous.flush();
 		    }
 		} catch (IOException e) {
-		    System.out.println("IO Ex Reciv ОК");
+		    CliFace.getInstance().showText("IO Ex Reciv ОК");
 		    try {
 			if (FileSocket != null && FileSocket.isConnected()) {
 			    FileSocket.close();
@@ -172,26 +163,25 @@ public class FileTransporter {
 		    }
 		    e.printStackTrace();
 		} finally {
-		    System.out.println("finall re");
+		    CliFace.getInstance().showText("finall re");
 		    try {
 			if (FileSocket != null && FileSocket.isConnected()) {
-			    System.out.println("finall re if");
+			    CliFace.getInstance().showText("finall re if");
 			    FileSocket.close();
-			    SS.close();
 			}
 		    } catch (IOException e) {
-			System.out.println("finall re if ex");
+			CliFace.getInstance().showText("finall re if ex");
 			e.printStackTrace();
 		    }
 		}
-		System.out.println("Прием ОК");
+		CliFace.getInstance().showText("Прием ОК");
 
 	    }
 	}).start();
     }
 
     public static void doSend(String Ip) throws IOException { // не готов
-	System.out.println("Передача");
+	CliFace.getInstance().showText("Передача");
 	new Thread(new Runnable() {
 
 	    @Override
@@ -219,7 +209,7 @@ public class FileTransporter {
 
 		// try {
 		// if (FileSocket != null && FileSocket.isConnected()) {
-		// System.out.println("в doSend не было закрыто");
+		// CliFace.getInstance().showText("в doSend не было закрыто");
 		// FileSocket.close();
 		// }
 		// } catch (IOException e1) {
@@ -236,47 +226,47 @@ public class FileTransporter {
 				    JOptionPane.YES_NO_CANCEL_OPTION);
 		}
 		try (OutputStream Ous = new BufferedOutputStream(FileSocket
-			.getOutputStream(), 209715200);
+			.getOutputStream(), 20971520);
 			InputStream Ins = new BufferedInputStream(
-				new FileInputStream(CliFace.getFb()), 209715200);) {
-		    System.out.println("getRemoteSocketAddress"
+				new FileInputStream(CliFace.getFb()), 20971520);) {
+		    CliFace.getInstance().showText("getRemoteSocketAddress"
 			    + FileSocket.getRemoteSocketAddress());
-		    System.out.println("getInetAddress"
+		    CliFace.getInstance().showText("getInetAddress"
 			    + FileSocket.getInetAddress());
-		    byte[] buffArr = new byte[209715200];
+		    byte[] buffArr = new byte[20971520];
 		    long sended = 0;
 		    int recivd = 0;
 		    while ((recivd = Ins.read(buffArr)) != -1
 			    && fileSize >= sended) {
-			System.out.println("передача WHILE");
+			CliFace.getInstance().showText("передача WHILE");
 			sended += recivd;
 			Ous.write(buffArr, 0, recivd);
 			Ous.flush();
 		    }
 		} catch (IOException e) {
-		    System.out.println("IO Ex Send ОК");
+		    CliFace.getInstance().showText("IO Ex Send ОК");
 		    try {
 			if (FileSocket != null && FileSocket.isConnected()) {
 			    FileSocket.close();
 			}
 		    } catch (IOException e1) {
-			System.out.println("IO Ex-ex Send ОК");
+			CliFace.getInstance().showText("IO Ex-ex Send ОК");
 			e1.printStackTrace();
 		    }
 		    e.printStackTrace();
 		} finally {
-		    System.out.println("finall se");
+		    CliFace.getInstance().showText("finall se");
 		    try {
 			if (FileSocket != null && FileSocket.isConnected()) {
-			    System.out.println("finall se if");
+			    CliFace.getInstance().showText("finall se if");
 			    FileSocket.close();
 			}
 		    } catch (IOException e) {
-			System.out.println("finall se if ex");
+			CliFace.getInstance().showText("finall se if ex");
 			e.printStackTrace();
 		    }
 		}
-		System.out.println("Передача ОК");
+		CliFace.getInstance().showText("Передача ОК");
 	    }
 	}).start();
     }
