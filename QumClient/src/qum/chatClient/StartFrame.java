@@ -64,7 +64,7 @@ public class StartFrame {
 		StartFrame.class.getResource("/res/ico.png")));
 	frame.setBounds(100, 100, 235, 290);
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+//Enter Button
 	ActionListener doAuthRequest = new ActionListener() {
 
 	    public void actionPerformed(ActionEvent e) {
@@ -102,7 +102,7 @@ public class StartFrame {
 			    infoLable
 				    .setText("<html><i>Нету связи с сервером!</i></html>");
 			    SocketMaster.getInstance().setTotalNullMdf();
-			    System.gc();
+			    System.gc(); //plz ))
 			} else
 			    System.out.println("ELSE - sended");
 		    }
@@ -171,79 +171,23 @@ public class StartFrame {
 
 	JButton btnNewButton = new JButton("User 2");
 	btnNewButton.addActionListener(new ActionListener() {
+	
 	    public void actionPerformed(ActionEvent e) {
-		if (SocketMaster.getMainChatSocket() == null) {
-		    if (SocketMaster.initMainSocket()) {
-			SocketMaster.getInstance().sendMess(
-				new Mess("user", "pass",
-					SocketMaster.AUTH_REQUEST));
-			System.out.println("AUTH_REQUEST - send");
-		    } else {
-			System.out.println("else");
-			infoLable.setIcon(new ImageIcon(RegisterFrame.class
-				.getResource("/res/att.png")));
-			infoLable.setForeground(Color.RED);
-			infoLable
-				.setText("<html><i>Нету связи с сервером!</i></html>");
-		    }
-		} // если получилось связатса с сервером,то отправляем
-		  // запрос на авторизацию
-		else {
-		    if (!SocketMaster.getInstance()
-			    .sendMess(
-				    new Mess("user", "pass",
-					    SocketMaster.AUTH_REQUEST))) {
-			System.out.println("ELSE - ! sended");
-			infoLable.setIcon(new ImageIcon(RegisterFrame.class
-				.getResource("/res/att.png")));
-			infoLable.setForeground(Color.RED);
-			infoLable
-				.setText("<html><i>Нету связи с сервером!</i></html>");
-			SocketMaster.getInstance().setTotalNullMdf();
-			System.gc();
-		    } else
-			System.out.println("ELSE - sended");
-		}
+		txtLogin.setText("Test_II");
+		pwdPass.setText("pass");
+		doAuthRequest.actionPerformed(e);
 	    }
 	});
+	
 	btnNewButton.setBounds(115, 45, 97, 23);
 	frame.getContentPane().add(btnNewButton);
 
 	JButton btnTestUser = new JButton("User 1");
 	btnTestUser.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent arg0) {
-		if (SocketMaster.getMainChatSocket() == null) {
-		    if (SocketMaster.initMainSocket()) {
-			SocketMaster.getInstance().sendMess(
-				new Mess("adm3", "pass",
-					SocketMaster.AUTH_REQUEST));
-			System.out.println("AUTH_REQUEST - send");
-		    } else {
-			System.out.println("else");
-			infoLable.setIcon(new ImageIcon(RegisterFrame.class
-				.getResource("/res/att.png")));
-			infoLable.setForeground(Color.RED);
-			infoLable
-				.setText("<html><i>Нету связи с сервером!</i></html>");
-		    }
-		} // если получилось связатса с сервером,то отправляем
-		  // запрос на авторизацию
-		else {
-		    if (!SocketMaster.getInstance()
-			    .sendMess(
-				    new Mess("adm3", "pass",
-					    SocketMaster.AUTH_REQUEST))) {
-			System.out.println("ELSE - ! sended");
-			infoLable.setIcon(new ImageIcon(RegisterFrame.class
-				.getResource("/res/att.png")));
-			infoLable.setForeground(Color.RED);
-			infoLable
-				.setText("<html><i>Нету связи с сервером!</i></html>");
-			SocketMaster.getInstance().setTotalNullMdf();
-			System.gc();
-		    } else
-			System.out.println("ELSE - sended");
-		}
+		txtLogin.setText("Test_I");
+		pwdPass.setText("pass");
+		doAuthRequest.actionPerformed(arg0);
 	    }
 	});
 	btnTestUser.setBounds(6, 45, 97, 23);

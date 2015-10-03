@@ -125,12 +125,12 @@ public class SocketMaster extends Thread {
 			StartFrame.infoLable
 				.setText("<html><i>Неправильный логин или пароль!!</i></html>");
 		    } else if (BuffMesObj.getServiceCode() == SUCCESS_AUTH_SUCCESS_ONLINE) {
-			CliFace.getInstance().setMyNick(BuffMesObj.getValue1());
+			CliFace.getInstance().setMyNick(BuffMesObj.getValue2());
 			CliFace.getInstance()
 				.getFrame()
 				.setTitle(
 					"Hawaii Chat      "
-						+ BuffMesObj.getValue1());
+						+ BuffMesObj.getValue2());
 			StartFrame.frame.setVisible(false);
 			CliFace.getInstance().getFrame().setVisible(true);
 		    } else if (BuffMesObj.getServiceCode() == SUCCESS_AUTH_ALREADY_ONLINE) {
@@ -142,7 +142,7 @@ public class SocketMaster extends Thread {
 		    } else if (BuffMesObj.getServiceCode() == REGISTER_SUCCESS) {
 			CliFace.getInstance().setMyNick(BuffMesObj.getValue1());
 			CliFace.getInstance().getCurrentUserIs()
-				.setText("   " + BuffMesObj.getValue1());
+				.setText("   " + BuffMesObj.getValue2());
 			RegisterFrame.frame.setVisible(false);
 			CliFace.getInstance().getFrame().setVisible(true);
 		    } else if (BuffMesObj.getServiceCode() == REGISTER_FAIL) {
@@ -176,14 +176,14 @@ public class SocketMaster extends Thread {
 		    .showText(
 			    ("SYS : нету соединения с сервером(возможно он выключен), либо у программы проблемы ")
 				    + newline
-				    + (" с выходом в итернет.Попробуйте отключить антивирусне программы или фаерволл!!"));
+				    + (" с выходом в итернет.Попробуйте отключить антивирусне программы или фаервол!!"));
 	} catch (IOException e) {
 	    e.printStackTrace();
 	    CliFace.getInstance()
 		    .showText(
 			    ("SYS : нету соединения с сервером(возможно он выключен), либо у программы проблемы ")
 				    + newline
-				    + (" с выходом в итернет.Попробуйте отключить антивирусне программы или фаерволл."));
+				    + (" с выходом в итернет.Попробуйте отключить антивирусне программы или фаервол."));
 	} catch (ClassNotFoundException e) {
 	    e.printStackTrace();
 	} finally {
