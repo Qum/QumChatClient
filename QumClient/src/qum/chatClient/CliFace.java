@@ -30,6 +30,7 @@ import javax.swing.border.LineBorder;
 
 import qum.messageClass.Mess;
 
+
 public class CliFace {
 
     private static CliFace face;
